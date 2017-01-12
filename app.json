@@ -1,0 +1,7 @@
+{
+  "name": "Voice Assistant Webhook",
+  "description": "Allows you to easily build a webhook that uses your own web services to be handled by natural language voice commands from API.AI",
+  "repository": "https://github.com/joaomgcd/VoiceAssistantWebHook",
+  "logo": "http://xvir.github.io/img/apiai.png",
+  "keywords": ["api.ai", "natural language"]
+}
