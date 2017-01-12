@@ -15,7 +15,7 @@ This class should have an empty constructor and it should call the superclass co
 You can look at the existing handlers to get an idea how it works
 
 Here's a very basic example:
-
+```python
 	from assistanthandlerbase import AssistantHandler
 
 	class AssistantHandlerHelloWorld(AssistantHandler):
@@ -27,6 +27,6 @@ Here's a very basic example:
 
 	    def getSpeech(self, parameters, data):
 	        return "Hello World!"
-
+```
 This handler is triggered when the API.AI command's action is "helloworld"
 It simply returns the static string "Hello World!" as the speech response.
