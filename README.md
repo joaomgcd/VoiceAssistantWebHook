@@ -93,3 +93,9 @@ class AssistantHandlerYahooWeather(AssistantHandler):
 ```
 You can see how the **getUrl** method returns an URL that will get some weather results for the parameter called **geo-city**
 The  **getSpeech** method parses the data out of the results and returns a string with today's weather for the city in the parameter.
+
+
+# How do I use this with API.AI?
+- Click the **Deploy to Heroku** button.
+- After your app is created open [API.AI](https://api.ai/), go to the Fullfillment tab and paste your Webhook URL there. Your Webhook URL is your app's name followed by .herokuapp.com/webhook For example, if your app's name is **superduperapp** your URL will be **https://superduperapp.herokuapp.com/webhook**
+- In the API.AI intents that you want to be handled by the webhook enable the **Use webhook** checkbox in the **Fulfillment** section of the intent
