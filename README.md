@@ -2,6 +2,12 @@
 
 This is an easy way to create a Webhook to use with API.AI.
 
+You can use this to allow API.AI to access other APIs. Included is an example that gets the current weather from the Yahoo Weather API.
+
+You start by creating an intent in API.AI and then create a handler for that intent in the webhook to make it do whatever you want.
+
+For example, you could create an intent that would get the current value for your favorite stock or what the latest movie releases are. If you can access an API you can use it with API.AI :)
+
 More info about Api.ai webhooks could be found here:
 [Api.ai Webhook](https://docs.api.ai/docs/webhook)
 
