@@ -11,6 +11,13 @@ For example, you could create an intent that would get the current value for you
 More info about Api.ai webhooks could be found here:
 [Api.ai Webhook](https://docs.api.ai/docs/webhook)
 
+# How do I use this with API.AI?
+- Click this button: [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+- After your app is created in Heroku open [API.AI](https://api.ai/), go to the Fullfillment tab and paste your Webhook URL there. Your Webhook URL is your app's name followed by .herokuapp.com/webhook For example, if your app's name is **superduperapp** your URL will be **https://superduperapp.herokuapp.com/webhook**
+- In the API.AI intents that you want to be handled by the webhook enable the **Use webhook** checkbox in the **Fulfillment** section of the intent
+- To test it out try creating an Hello World intent in API.AI that has the **helloworld** action, enable the webhook option, test it out and see if you get back the **Hello World** speech.
+- To easily edit the code you can use Heroku's Dropbox integration. It'll create a folder in your dropbox for you where you can edit the code and deploy it back to your Heroku app. Look for this option in the **Deploy** tab in your Heroku dashboard.
+
 # How do I add my own services?
 You create a new folder in the assistanthandlers folder, and in that folder a file with the name \_\_init\_\_.py
 You then create a subclass of AssistantHandler with getUrl and getSpeech methods.
@@ -96,14 +103,6 @@ class AssistantHandlerYahooWeather(AssistantHandler):
 ```
 You can see how the **getUrl** method returns an URL that will get some weather results for the parameter called **geo-city**
 The  **getSpeech** method parses the data out of the results and returns a string with today's weather for the city in the parameter.
-
-
-# How do I use this with API.AI?
-- Click this button: [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
-- After your app is created in Heroku open [API.AI](https://api.ai/), go to the Fullfillment tab and paste your Webhook URL there. Your Webhook URL is your app's name followed by .herokuapp.com/webhook For example, if your app's name is **superduperapp** your URL will be **https://superduperapp.herokuapp.com/webhook**
-- In the API.AI intents that you want to be handled by the webhook enable the **Use webhook** checkbox in the **Fulfillment** section of the intent
-- To test it out try creating an Hello World intent in API.AI that has the **helloworld** action, enable the webhook option, test it out and see if you get back the **Hello World** speech.
-- To easily edit the code you can use Heroku's Dropbox integration. It'll create a folder in your dropbox for you where you can edit the code and deploy it back to your Heroku app. Look for this option in the **Deploy** tab in your Heroku dashboard.
 
 # IMPORTANT: SUBJECT TO CHANGE
 The plugin structure for this is not final and could change at any moment, so be aware of that. 
