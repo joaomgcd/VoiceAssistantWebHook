@@ -5,9 +5,6 @@ This is an easy way to create a Webhook to use with API.AI.
 More info about Api.ai webhooks could be found here:
 [Api.ai Webhook](https://docs.api.ai/docs/webhook)
 
-# Deploy to:
-[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
-
 # How do I add my own services?
 You create a new folder in the assistanthandlers folder, and in that folder a file with the name __init__.py
 You then create a subclass of AssistantHandler with getUrl and getSpeech methods.
