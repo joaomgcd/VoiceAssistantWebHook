@@ -99,4 +99,4 @@ The  **getSpeech** method parses the data out of the results and returns a strin
 - Click this button: [![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
 - After your app is created in Heroku open [API.AI](https://api.ai/), go to the Fullfillment tab and paste your Webhook URL there. Your Webhook URL is your app's name followed by .herokuapp.com/webhook For example, if your app's name is **superduperapp** your URL will be **https://superduperapp.herokuapp.com/webhook**
 - In the API.AI intents that you want to be handled by the webhook enable the **Use webhook** checkbox in the **Fulfillment** section of the intent
-- To test it out try creating an Hello World intent in API.AI that has the **helloworld** action and see if you get back the **Hello World** speech.
+- To test it out try creating an Hello World intent in API.AI that has the **helloworld** action, enable the webhook option, test it out and see if you get back the **Hello World** speech.
