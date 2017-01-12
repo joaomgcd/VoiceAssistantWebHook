@@ -6,7 +6,7 @@ More info about Api.ai webhooks could be found here:
 [Api.ai Webhook](https://docs.api.ai/docs/webhook)
 
 # How do I add my own services?
-You create a new folder in the assistanthandlers folder, and in that folder a file with the name __init__.py
+You create a new folder in the assistanthandlers folder, and in that folder a file with the name \_\_init\_\_.py
 You then create a subclass of AssistantHandler with getUrl and getSpeech methods.
 This class should have an empty constructor and it should call the superclass constructor setting the handler's action
 You can look at the existing handlers to get an idea how it works
