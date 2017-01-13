@@ -13,15 +13,46 @@ from flask import make_response
 from assistanthandlerbase import AssistantHandler
 from os import listdir
 
-
-
+#import os
+#import psycopg2
+#import urlparse
+#
+#urlparse.uses_netloc.append("postgres")
+#databaseUrl = os.getenv("DATABASE_URL")
+#print(databaseUrl)
+#url = urlparse.urlparse(databaseUrl)
+#
+#conn = psycopg2.connect(
+#    database=url.path[1:],
+#    user=url.username,
+#    password=url.password,
+#    host=url.hostname,
+#    port=url.port
+#)
+#cur = conn.cursor()
+#cur.execute("select exists(select * from information_schema.tables where table_name=%s)", ('auth',))
+#exists = cur.fetchone()[0]
+#if not exists:
+#	cur.execute("CREATE TABLE auth (id serial PRIMARY KEY, apiName varchar, data varchar);")
+#cur.execute("INSERT INTO auth (apiName,data) VALUES (%s, %s);",("test",json.dumps({"ola":"adeus"}, indent=4),))
+#cur.execute("SELECT * FROM auth WHERE apiName = %s;",('test',))
+#row = cur.fetchone()
+#print(cur.fetchone())
+#if row is not None:
+#	id, apiName, data = row
+#	cur.execute("UPDATE auth  SET data=(%s) WHERE id = (%s)",(json.dumps({"whaaaa":"hoooo"}, indent=4),id ,))
+#	print(str(id))
+#	print(apiName)
+#conn.commit()
+#cur.close()
+#conn.close()
 
 # Flask app should start in global layout
 app = Flask(__name__, static_url_path='/static')
 
 @app.errorhandler(Exception)
 def handle_bad_request(e):
-    return 'Error: ' + str(e)
+    return make_response(json.dumps({"error":str(e)}, indent=4))
 
 @app.route('/webhook', methods=['POST'])
 def webhook():

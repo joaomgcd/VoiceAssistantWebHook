@@ -25,6 +25,10 @@
 			})
 			.then(res => res.json())
 			.then(json => {
+				if(json.error){
+					document.write(json.error);
+					return;
+				}
 				console.log(json);
 				if(json.refresh_token){
 					document.write("Success! You can close this now");

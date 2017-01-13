@@ -56,6 +56,10 @@
 				})
 				.then(res => res.json())
 				.then(json => {
+					if(json.error){
+		 				buttonSubmit.value = json.error;
+						return;
+					}
 					console.log(json);
 					localStorage.apiName = data.apiName;
 					window.location = `${inputAuthUrl.value}?client_id=${inputClientId.value}&response_type=code&redirect_uri=${encodeURIComponent(inputRedirectUrl.value)}&state=${inputClientId.value}&scope=${inputScope.value}&access_type=offline&approval_prompt=force`;
