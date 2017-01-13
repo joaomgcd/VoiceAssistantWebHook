@@ -112,6 +112,11 @@ You can see how the **getBaseUrl** method returns the base URL for the yahoo que
 The  **getSpeech** method parses the data out of the results and returns a string with today's weather for the city in the parameter.
 
 # Handler with OAuth 2
+
+## Attach Database
+To manage authentication you need to be able to store persistent data. To do that install the [PostgreSQL Add-On](https://elements.heroku.com/addons/heroku-postgresql) and attach it to your app in Heroku. After installing the add-on you can use the special authentication handlers 
+
+## Use Special Handler
 You can use the **AssistantHandlerWithAuthCode** class as a base for a handler that supports **OAuth 2**. Take a look at the **AssistantHandlerSpotifyUser** class as an example:
 
 ```python
