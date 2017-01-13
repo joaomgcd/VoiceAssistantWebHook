@@ -145,7 +145,7 @@ class AssistantHandlerSpotifyUser(AssistantHandlerSpotify):
 
 ```
 Here you can see that there's a base **AssistantHandlerSpotify** that simply defines the base URL for the Spotify API. Then you have an implementation of an endpoint with the **AssistantHandlerSpotifyUser** which gets user data and returns it as speech.
-To be able to use these you need to use the /static/auth.html page to enter the API's details and sign-in with your user.
+To be able to use these you need to use the [Auth Page](static/auth.html) to enter the API's details and sign-in with your user.
 
 # IMPORTANT: SUBJECT TO CHANGE
 The plugin structure for this is not final and could change at any moment, so be aware of that. 
