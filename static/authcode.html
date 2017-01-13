@@ -10,6 +10,8 @@
 			return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(url)||[,""])[1].replace(/\+/g, '%20'))||null
 		}
 		document.addEventListener("DOMContentLoaded", ()=>{
+		 	var elementStatus = document.getElementById("status");
+		 	var setStatus = text => elementStatus.innerHTML = text;
 			console.log(localStorage.apiName);
 			var data = {
 			    apiName: localStorage.apiName,
@@ -26,19 +28,21 @@
 			.then(res => res.json())
 			.then(json => {
 				if(json.error){
-					document.write(json.error);
+					setStatus(json.error);
 					return;
 				}
 				console.log(json);
 				if(json.refresh_token){
-					document.write("Success! You can close this now");
+					setStatus("Success! You can close this now");
 				}else{
-					document.write("Error! No refresh token!");
+					setStatus("Error! No refresh token!");
 				}
 			});
 		});
 	</script>
 </head>
 <body>
+	<div id="status">Loading...</div>
+	<a href="auth.html">Authorize another API</a>
 </body>
 </html>

@@ -11,41 +11,73 @@
 		}
 	</style>
 	<script type="text/javascript">
-		var setCachedValue = name => {
-			var value = localStorage[name];
-			if(value){
-				document.getElementById(name).value = value;
-			}
-		}
-		var storeValueCache = name => {
-			localStorage[name] = document.getElementById(name).value;
-		};
 		document.addEventListener("DOMContentLoaded", ()=>{
-			if(!localStorage.apiName){
+			var redirectUrl = `http://${window.location.host}/static/authcode.html`;
+		 	var inputApiName = document.getElementById("apiName");
+		 	var inputClientId = document.getElementById("clientId");
+		 	var inputClientSecret = document.getElementById("clientSecret");
+
+			var setCachedValue = () => {
+				var value = localStorage[inputApiName.value];
+				localStorage.apiName = inputApiName.value;
+				var clientId = "";
+				var clientSecret = "";
+				if(value){
+					var data = JSON.parse(value);
+					clientId = data.clientId;
+					clientSecret = data.clientSecret;
+				}
+				inputClientId.value = clientId;
+				inputClientSecret.value = clientSecret;
+			}
+			var saveApiData = (apiName,data) => {
+				localStorage[apiName] =  JSON.stringify({ 
+					"clientId":data.clientId,
+					"clientSecret":data.clientSecret
+				});
+			}
+			var storeValueCache = () => {
+				saveApiData(inputApiName.value,{ 
+					"clientId":inputClientId.value,
+					"clientSecret":inputClientSecret.value
+				});
+			};
+			if(!localStorage.hasRanOnce){
+				localStorage.hasRanOnce = true;
+				saveApiData("spotify",{ 
+					"clientId":"9b02327a476441aca11d40e793856b3f",
+					"clientSecret":"6327ebcf25f8499e836ee9b51639a6c2"
+				});
 				alert("These are example values. You should change them for your own APIs. You can also use these to test the Spotify API.")
 			}
 			var inputs = document.querySelectorAll("input");
 			for(input of inputs){
-				setCachedValue(input.id);
-				input.onkeyup = e => storeValueCache(e.target.id);
+				input.onkeyup = e => storeValueCache();
 			}
-		 	var inputApiName = document.getElementById("apiName");
-		 	var inputAuthUrl = document.getElementById("authUrl");
-		 	var inputTokenUrl = document.getElementById("tokenUrl");
-		 	var inputClientId = document.getElementById("clientId");
-		 	var inputClientSecret = document.getElementById("clientSecret");
-		 	var inputScope = document.getElementById("scopes");
-		 	var inputRedirectUrl = document.getElementById("redirectUrl");
+		 	inputApiName.onchange = e => setCachedValue();
+			fetch("/apinames")
+				.then(res => res.json())
+				.then(result=>{
+				for(apiName of result.apiNames){					
+				    var option = document.createElement("option");
+				    option.value = apiName;
+				    option.text = apiName;
+				    inputApiName.appendChild(option);
+				}
+				if(localStorage.apiName){
+					inputApiName.value = localStorage.apiName;
+				}
+				setCachedValue();
+			});
 		 	var buttonSubmit = document.getElementById("buttonSubmit");
 		 	buttonSubmit.onclick = e=>{
 		 		buttonSubmit.disabled = true;
 		 		buttonSubmit.value = "Authorizing...";
 		 		var data = {
-				    apiName: apiName.value,
+				    apiName: inputApiName.value,
 				    clientId: inputClientId.value,
 				    clientSecret: inputClientSecret.value,
-				    redirectUrl: inputRedirectUrl.value,
-				    tokenUrl: inputTokenUrl.value
+				    redirectUrl: redirectUrl
 				};
 
 
@@ -62,20 +94,16 @@
 					}
 					console.log(json);
 					localStorage.apiName = data.apiName;
-					window.location = `${inputAuthUrl.value}?client_id=${inputClientId.value}&response_type=code&redirect_uri=${encodeURIComponent(inputRedirectUrl.value)}&state=${inputClientId.value}&scope=${inputScope.value}&access_type=offline&approval_prompt=force`;
+					window.location = `${json.authUrl}?client_id=${inputClientId.value}&response_type=code&redirect_uri=${encodeURIComponent(redirectUrl)}&state=${inputClientId.value}&scope=${json.scopes}&access_type=offline&approval_prompt=force`;
 				});
 			}
 		});
 	</script>
 </head>
 <body>
-	<div>API Name: <input type="text" id="apiName" value="spotify"/></div>
-	<div>Auth URL: <input type="text" id="authUrl" value="https://accounts.spotify.com/authorize"/></div>
-	<div>Token URL: <input type="text" id="tokenUrl" value="https://accounts.spotify.com/api/token"/></div>
+	<div>API: <select type="text" id="apiName"></select></div>
 	<div>Client ID: <input type="text" id="clientId" value="9b02327a476441aca11d40e793856b3f" /></div>
 	<div>Client Secret: <input type="text" id="clientSecret" value="6327ebcf25f8499e836ee9b51639a6c2" /></div>
-	<div>Scopes (separate with spaces): <input type="text" id="scopes" value="playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private streaming user-follow-modify user-follow-read user-library-read user-library-modify user-read-private user-read-birthdate user-read-email" /></div>
-	<div>Redirect URL: <input type="text" id="redirectUrl" value="http://localhost:5000/static/authcode.html"/></div>
 	<input type="button" id="buttonSubmit" value="Submit" />
 </body>
 </html>

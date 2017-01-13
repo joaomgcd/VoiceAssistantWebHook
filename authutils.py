@@ -6,6 +6,7 @@ import time
 import os
 import psycopg2
 import urlparse
+from utils import current_milli_time
 urlparse.uses_netloc.append("postgres")
 databaseUrl = os.getenv("DATABASE_URL")
 print(databaseUrl)
@@ -26,7 +27,6 @@ if not exists:
 conn.commit()
 cur.close()
 
-current_milli_time = lambda: int(round(time.time() * 1000))
 
 def getAuthFromFile(apiName):
 	cur = conn.cursor()
@@ -66,6 +66,8 @@ def setAuthAccessToken(auth, response):
 
 def getAccessToken(apiName):    
 	auth = getAuthFromFile(apiName)
+	if auth is None:
+		return None
 	print(auth)
 	if current_milli_time() > auth.get("expiresOn"):
 		clientId = auth.get("clientId")

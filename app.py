@@ -52,7 +52,8 @@ app = Flask(__name__, static_url_path='/static')
 
 @app.errorhandler(Exception)
 def handle_bad_request(e):
-    return make_response(json.dumps({"error":str(e)}, indent=4))
+	import traceback
+	return make_response(json.dumps({"error":str(e),"trace":str(traceback.format_exc())}, indent=4))
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
@@ -82,8 +83,16 @@ def webhook():
 @app.route('/auth', methods=['POST'])
 def storeauth():
 	auth = request.get_json(silent=True, force=True)
+	print(auth)
+	apiName = auth.get("apiName")
+	urls = handlerutils.getAuthAndTokenUrls(apiName)
+	if urls is not None:
+		authUrl, tokenUrl, scopes = urls
+		auth["authUrl"] = authUrl
+		auth["tokenUrl"] = tokenUrl
+		auth["scopes"] = " ".join([scope for scope in scopes])
 	authutils.writeAuthToFile(auth)   
-	return make_response(json.dumps({"status":"ok"}, indent=4))
+	return make_response(json.dumps(auth, indent=4))
 
 @app.route('/auth', methods=['GET'])
 def getauth():
@@ -110,8 +119,25 @@ def setAuthRefreshToken():
 	print responseJson
 	return make_response(responseJson)
 
+@app.route('/apinames', methods=['GET'])
+def getAuthApiNames():
+	return make_response(json.dumps({"apiNames":handlerutils.getApiNames()}))
+
+@app.route('/api', methods=['GET'])
+def getApiDetails():
+	apiName = request.args.get('apiName')
+	result = {}
+	urls = handlerutils.getAuthAndTokenUrls(apiName)
+	if urls is not None:
+		authUrl, tokenUrl, scopes = urls
+		result["authUrl"] = authUrl
+		result["tokenUrl"] = tokenUrl
+		result["scopes"] = scopes
+	return make_response(json.dumps(result))
+
 if __name__ == '__main__':
 	port = int(os.getenv('PORT', 5000))
 
 	print "Starting app on port %d" % port
 	app.run(debug=False, port=port, host='0.0.0.0',threaded=True)
+

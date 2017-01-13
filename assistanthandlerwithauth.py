@@ -12,3 +12,6 @@ class AssistantHandlerWithAuth(AssistantHandler):
 	def __init__(self, action, apiName):
 		AssistantHandler.__init__(self,action)
 		self.apiName = apiName
+
+	def getApiName(self):
+		return self.apiName
