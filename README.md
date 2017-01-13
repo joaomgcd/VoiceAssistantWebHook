@@ -2,6 +2,10 @@
 
 This is an easy way to create a Webhook to use with API.AI.
 
+You'll be able to do stuff like this:
+
+[![Testing Voice Assistant Webhook](https://img.youtube.com/vi/4SDeHLhWpAk/0.jpg)](https://www.youtube.com/watch?v=4SDeHLhWpAk)
+
 You can use this to allow API.AI to access other APIs. Included is an example that gets the current weather from the Yahoo Weather API.
 
 You start by creating an intent in API.AI and then create a handler for that intent in the webhook to make it do whatever you want.
@@ -121,6 +125,7 @@ You can use the **AssistantHandlerWithAuthCode** class as a base for a handler t
 
 ```python
 
+
 from assistanthandlerwithauthcode import AssistantHandlerWithAuthCode
 from abc import ABCMeta, abstractmethod
 
@@ -132,6 +137,17 @@ class AssistantHandlerSpotify(AssistantHandlerWithAuthCode):
 	
 	def getBaseUrl(self,parameters):
 		return "https://api.spotify.com/v1/"
+
+
+	def getAuthUrl(self):
+		return "https://accounts.spotify.com/authorize"
+
+
+	def getTokenUrl(self):
+		return "https://accounts.spotify.com/api/token"        
+	
+	def getScopes(self):
+		return ['playlist-read-private','playlist-read-collaborative','playlist-modify-public','playlist-modify-private','streaming','user-follow-modify','user-follow-read','user-library-read','user-library-modify','user-read-private','user-read-birthdate','user-read-email']
         
 from spotify import AssistantHandlerSpotify
 
@@ -149,7 +165,7 @@ class AssistantHandlerSpotifyUser(AssistantHandlerSpotify):
 		return "Your name on Spotify is " + data["display_name"] + " and you have " + str(data["followers"]["total"]) + " followers"
 
 ```
-Here you can see that there's a base **AssistantHandlerSpotify** that simply defines the base URL for the Spotify API. Then you have an implementation of an endpoint with the **AssistantHandlerSpotifyUser** which gets user data and returns it as speech.
+Here you can see that there's a base **AssistantHandlerSpotify** that defines the base properties for the Spotify API like the base URL for the API calls, the auth URLs and the auth scopes it needs. Then you have an implementation of an endpoint with the **AssistantHandlerSpotifyUser** which gets user data and returns it as speech.
 To be able to use these you need to use the [Auth Page](static/auth.html) to enter the API's details and sign-in with your user.
 
 # IMPORTANT: SUBJECT TO CHANGE
