@@ -20,7 +20,7 @@ More info about Api.ai webhooks could be found here:
 
 # How do I add my own services?
 You create a new folder in the assistanthandlers folder, and in that folder a file with the name \_\_init\_\_.py
-You then create a subclass of AssistantHandler with getUrl and getSpeech methods.
+You then create a subclass of AssistantHandler with **getBaseUrl**, **getEndpoint**, **getEndpointParameters** and **getSpeech** methods.
 This class should have an empty constructor and it should call the superclass constructor setting the handler's action
 You can look at the existing handlers to get an idea how it works
 
@@ -29,14 +29,20 @@ Here's a very basic example:
 from assistanthandlerbase import AssistantHandler
 
 class AssistantHandlerHelloWorld(AssistantHandler):
-    def __init__(self):
-        AssistantHandler.__init__(self,"helloworld")
+	def __init__(self):
+		AssistantHandler.__init__(self,"helloworld")
 
-    def getUrl(self, parameters):
-        return None
+	def getBaseUrl(self,parameters):
+		pass
 
-    def getSpeech(self, parameters, data):
-        return "Hello World!"
+	def getEndpoint(self,parameters):
+		pass
+
+	def getEndpointParameters(self,parameters):
+		pass
+
+	def getSpeech(self, parameters, data):
+		return "Hello World!"
 ```
 This handler is triggered when the API.AI command's action is "helloworld"
 It simply returns the static string "Hello World!" as the speech response.
@@ -49,60 +55,97 @@ import urllib
 import json
 
 class AssistantHandlerYahooWeather(AssistantHandler):
-    def __init__(self):
-        AssistantHandler.__init__(self,"yahooWeatherForecast")
+	def __init__(self):
+		AssistantHandler.__init__(self,"yahooWeatherForecast")
+	
+	def getBaseUrl(self,parameters):
+		return "https://query.yahooapis.com/v1/public/"
 
-    def getUrl(self, parameters):
-        baseurl = "https://query.yahooapis.com/v1/public/yql?"
-        yql_query = self.makeYqlQuery(parameters)
-        if yql_query is None:
-            return {}
-        yql_url = baseurl + urllib.urlencode({'q': yql_query}) + "&format=json"
-        return yql_url
+	def getEndpoint(self,parameters):
+		return "yql"
 
-    def makeYqlQuery(self, parameters):
-        city = parameters.get("geo-city")
-        if city is None:
-            return None
+	def getEndpointParameters(self,parameters):
+		return {"q":self.makeYqlQuery(parameters),"format":"json"}
 
-        return "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text='" + city + "')"
+	def makeYqlQuery(self, parameters):
+		city = parameters.get("geo-city")
+		if city is None:
+			return None
 
-    def getSpeech(self, parameters, data):
-        query = data.get('query')
-        if query is None:
-            return "No query"
+		return "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text='" + city + "')"
 
-        result = query.get('results')
-        if result is None:
-            return "No results"
+	def getSpeech(self, parameters, data):
+		query = data.get('query')
+		if query is None:
+			return "No query"
 
-        channel = result.get('channel')
-        if channel is None:
-            return "No channel"
+		result = query.get('results')
+		if result is None:
+			return "No results"
 
-        item = channel.get('item')
-        location = channel.get('location')
-        units = channel.get('units')
-        if (location is None) or (item is None) or (units is None):
-            return "No location or item or units"
+		channel = result.get('channel')
+		if channel is None:
+			return "No channel"
 
-        condition = item.get('condition')
-        if condition is None:
-            return "No condition"
+		item = channel.get('item')
+		location = channel.get('location')
+		units = channel.get('units')
+		if (location is None) or (item is None) or (units is None):
+			return "No location or item or units"
 
-        # print(json.dumps(item, indent=4))
+		condition = item.get('condition')
+		if condition is None:
+			return "No condition"
 
-        speech = "Today in " + location.get('city') + ": " + condition.get('text') + \
-                 ", the temperature is " + condition.get('temp') + " " + units.get('temperature')
+		# print(json.dumps(item, indent=4))
 
-        print("Response:")
-        print(speech)
+		speech = "Today in " + location.get('city') + ": " + condition.get('text') + \
+				 ", the temperature is " + condition.get('temp') + " " + units.get('temperature')
 
-        return speech
+		print("Response:")
+		print(speech)
+
+		return speech
 
 ```
-You can see how the **getUrl** method returns an URL that will get some weather results for the parameter called **geo-city**
+You can see how the **getBaseUrl** method returns the base URL for the yahoo query API, the **getEndpoint** method returns the **yql** endpoint and the **getEndpointParameters** method returns the query that will get some weather results for the parameter called **geo-city**
 The  **getSpeech** method parses the data out of the results and returns a string with today's weather for the city in the parameter.
+
+# Handler with OAuth 2
+You can use the **AssistantHandlerWithAuthCode** class as a base for a handler that supports **OAuth 2**. Take a look at the **AssistantHandlerSpotifyUser** class as an example:
+
+```python
+
+from assistanthandlerwithauthcode import AssistantHandlerWithAuthCode
+from abc import ABCMeta, abstractmethod
+
+class AssistantHandlerSpotify(AssistantHandlerWithAuthCode):
+	__metaclass__ = ABCMeta
+
+	def __init__(self,action):
+		AssistantHandlerWithAuthCode.__init__(self,action,"spotify")    
+	
+	def getBaseUrl(self,parameters):
+		return "https://api.spotify.com/v1/"
+        
+from spotify import AssistantHandlerSpotify
+
+class AssistantHandlerSpotifyUser(AssistantHandlerSpotify):
+	def __init__(self):
+		AssistantHandlerSpotify.__init__(self,"spotifyuser")	
+
+	def	getEndpoint(self,parameters):
+		return "me"
+
+	def getEndpointParameters(self,parameters):
+		return None
+
+	def getSpeech(self, parameters, data):
+		return "Your name on Spotify is " + data["display_name"] + " and you have " + str(data["followers"]["total"]) + " followers"
+
+```
+Here you can see that there's a base **AssistantHandlerSpotify** that simply defines the base URL for the Spotify API. Then you have an implementation of an endpoint with the **AssistantHandlerSpotifyUser** which gets user data and returns it as speech.
+To be able to use these you need to use the /static/auth.html page to enter the API's details and sign-in with your user.
 
 # IMPORTANT: SUBJECT TO CHANGE
 The plugin structure for this is not final and could change at any moment, so be aware of that. 
