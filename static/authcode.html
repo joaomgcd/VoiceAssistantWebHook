@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Authorizing APIs</title>
+	<script type="text/javascript">
+		getURLParameter = function(name,url) {
+			if(!url){
+				url = window.location.href;
+			}
+			return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(url)||[,""])[1].replace(/\+/g, '%20'))||null
+		}
+		document.addEventListener("DOMContentLoaded", ()=>{
+			console.log(localStorage.apiName);
+			var data = {
+			    apiName: localStorage.apiName,
+			    code: getURLParameter("code")
+			};
+
+
+			console.log(data);
+			fetch("/authrefresh",
+			{
+			    method: "POST",
+			    body: JSON.stringify(data)
+			})
+			.then(res => res.json())
+			.then(json => {
+				console.log(json);
+				if(json.refresh_token){
+					document.write("Success! You can close this now");
+				}else{
+					document.write("Error! No refresh token!");
+				}
+			});
+		});
+	</script>
+</head>
+<body>
+</body>
+</html>
