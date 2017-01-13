@@ -19,7 +19,9 @@ from os import listdir
 # Flask app should start in global layout
 app = Flask(__name__, static_url_path='/static')
 
-
+@app.errorhandler(Exception)
+def handle_bad_request(e):
+    return 'Error: ' + str(e)
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
