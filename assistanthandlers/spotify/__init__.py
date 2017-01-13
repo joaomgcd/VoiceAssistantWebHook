@@ -1,7 +1,5 @@
 
 from assistanthandlerwithauthcode import AssistantHandlerWithAuthCode
-import json
-import urllib
 from abc import ABCMeta, abstractmethod
 
 class AssistantHandlerSpotify(AssistantHandlerWithAuthCode):

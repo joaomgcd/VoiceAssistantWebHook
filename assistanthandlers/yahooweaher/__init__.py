@@ -3,56 +3,54 @@ import urllib
 import json
 
 class AssistantHandlerYahooWeather(AssistantHandler):
-    def __init__(self):
-        AssistantHandler.__init__(self,"yahooWeatherForecast")
-    
-    def getBaseUrl(self,parameters):
-        return "https://query.yahooapis.com/v1/public/"
+	def __init__(self):
+		AssistantHandler.__init__(self,"yahooWeatherForecast")
+	
+	def getBaseUrl(self,parameters):
+		return "https://query.yahooapis.com/v1/public/"
 
+	def getEndpoint(self,parameters):
+		return "yql"
 
-    def getEndpoint(self,parameters):
-        return "yql"
+	def getEndpointParameters(self,parameters):
+		return {"q":self.makeYqlQuery(parameters),"format":"json"}
 
+	def makeYqlQuery(self, parameters):
+		city = parameters.get("geo-city")
+		if city is None:
+			return None
 
-    def getEndpointParameters(self,parameters):
-        return {"q":self.makeYqlQuery(parameters),"format":"json"}
+		return "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text='" + city + "')"
 
-    def makeYqlQuery(self, parameters):
-        city = parameters.get("geo-city")
-        if city is None:
-            return None
+	def getSpeech(self, parameters, data):
+		query = data.get('query')
+		if query is None:
+			return "No query"
 
-        return "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text='" + city + "')"
+		result = query.get('results')
+		if result is None:
+			return "No results"
 
-    def getSpeech(self, parameters, data):
-        query = data.get('query')
-        if query is None:
-            return "No query"
+		channel = result.get('channel')
+		if channel is None:
+			return "No channel"
 
-        result = query.get('results')
-        if result is None:
-            return "No results"
+		item = channel.get('item')
+		location = channel.get('location')
+		units = channel.get('units')
+		if (location is None) or (item is None) or (units is None):
+			return "No location or item or units"
 
-        channel = result.get('channel')
-        if channel is None:
-            return "No channel"
+		condition = item.get('condition')
+		if condition is None:
+			return "No condition"
 
-        item = channel.get('item')
-        location = channel.get('location')
-        units = channel.get('units')
-        if (location is None) or (item is None) or (units is None):
-            return "No location or item or units"
+		# print(json.dumps(item, indent=4))
 
-        condition = item.get('condition')
-        if condition is None:
-            return "No condition"
+		speech = "Today in " + location.get('city') + ": " + condition.get('text') + \
+				 ", the temperature is " + condition.get('temp') + " " + units.get('temperature')
 
-        # print(json.dumps(item, indent=4))
+		print("Response:")
+		print(speech)
 
-        speech = "Today in " + location.get('city') + ": " + condition.get('text') + \
-                 ", the temperature is " + condition.get('temp') + " " + units.get('temperature')
-
-        print("Response:")
-        print(speech)
-
-        return speech
+		return speech

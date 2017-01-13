@@ -1,6 +1,4 @@
-
 from spotify import AssistantHandlerSpotify
-import json
 
 class AssistantHandlerSpotifyUser(AssistantHandlerSpotify):
 	def __init__(self):

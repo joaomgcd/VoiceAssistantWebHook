@@ -11,7 +11,7 @@ onlyfiles = [os.path.join(dp, f) for dp, dn, fn in os.walk(os.path.expanduser(my
 #onlyfiles = [f for f in listdir(mypath) if isfile(join(mypath, f)) and f.endswith(".py")]
 #print(onlyfiles)
 for f in onlyfiles:
-	moduleName = f.replace("\\__init__.py","").replace("assistanthandlers\\","")
+	moduleName = f.replace("\\__init__.py","").replace("assistanthandlers\\","").replace("/__init__.py","").replace("assistanthandlers/","")
 	imp.load_source( moduleName, f)
 
 def itersubclasses(cls, _seen=None):  
