@@ -12,7 +12,6 @@ from flask import request
 from flask import make_response
 from assistanthandlerbase import AssistantHandler
 from os import listdir
-
 #import os
 #import psycopg2
 #import urlparse
@@ -59,16 +58,22 @@ def handle_bad_request(e):
 def webhook():
 	req = request.get_json(silent=True, force=True)
 
+	if req is None:
+		print "No request received"
+		return
 	print("Request:")
 	print(json.dumps(req, indent=4))
 
 	res = None
+	result = req.get("result")
+	if result is None:
+		print "No result received"
+		return
+	parameters = result.get("parameters")
 	for assistanHandlerClass in handlerutils.assistanHandlerClasses:
 		#print assistanHandlerClass
-		assistantHandler = assistanHandlerClass()
-		if assistantHandler.shouldHandle(req):
-			result = req.get("result")
-			parameters = result.get("parameters")	  
+		assistantHandler = assistanHandlerClass()  
+		if assistantHandler.shouldHandle(req, parameters):
 			res = assistantHandler.handle(parameters)
 
 			break

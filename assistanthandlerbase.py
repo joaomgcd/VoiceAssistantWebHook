@@ -1,6 +1,7 @@
 
 import urllib
 import json
+import requests
 
 from abc import ABCMeta, abstractmethod
 
@@ -30,11 +31,14 @@ class AssistantHandler(object):
 	def getEndpointParameters(self,parameters):
 		pass
 
+	def getPostData(self,parameters):
+		pass
+
 
 	def __init__(self, action):
 		self.action = action
 
-	def shouldHandle(self, req):	 
+	def shouldHandle(self, req, parameters):	 
 		result = req.get("result")
 		if result is None:
 			return False;
@@ -43,16 +47,27 @@ class AssistantHandler(object):
 			return False
 		return True;
 
+	def shouldCallUrl(self, parameters):
+		return True
+
 	def handle(self, parameters): 
-		url = self.getUrl(parameters)
-		result = None
-		if url is not None:
-			result = urllib.urlopen(url).read()
-		print("Result:")
-		print(result)
 		data = None
-		if result is not None:
-			data = json.loads(result)
+		if self.shouldCallUrl(parameters):
+			url = self.getUrl(parameters)
+			result = None
+			if url is not None:
+				postData = self.getPostData(parameters)
+				print "postData: " + str(postData)
+				print "url: " + url
+				if postData is None:
+					result = urllib.urlopen(url).read()
+				else:
+					result = requests.post(url, json = postData, headers = {"Content-Type":"application/json"}).text
+			print("Result:")
+			print(result)
+			data = None
+			if result is not None:
+				data = json.loads(result)
 		return self.getResponse(self.getSpeech(parameters, data))
 
 	def getResponse(self,speech):
