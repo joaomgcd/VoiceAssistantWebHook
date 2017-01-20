@@ -16,7 +16,8 @@
 		 	var inputApiName = document.getElementById("apiName");
 		 	var inputClientId = document.getElementById("clientId");
 		 	var inputClientSecret = document.getElementById("clientSecret");
-
+		 	var elementRedirectUri = document.getElementById("elementRedirectUri");
+			elementRedirectUri.innerHTML = redirectUrl;
 			var setCachedValue = () => {
 				var value = localStorage[inputApiName.value];
 				localStorage.apiName = inputApiName.value;
@@ -44,11 +45,11 @@
 			};
 			if(!localStorage.hasRanOnce){
 				localStorage.hasRanOnce = true;
-				saveApiData("spotify",{ 
+				/*saveApiData("spotify",{ 
 					"clientId":"9b02327a476441aca11d40e793856b3f",
 					"clientSecret":"6327ebcf25f8499e836ee9b51639a6c2"
 				});
-				alert("These are example values. You should change them for your own APIs. You can also use these to test the Spotify API.")
+				alert("These are example values. You should change them for your own APIs. You can also use these to test the Spotify API.")*/
 			}
 			var inputs = document.querySelectorAll("input");
 			for(input of inputs){
@@ -100,10 +101,19 @@
 		});
 	</script>
 </head>
-<body>
+<body>	
 	<div>API: <select type="text" id="apiName"></select></div>
-	<div>Client ID: <input type="text" id="clientId" value="9b02327a476441aca11d40e793856b3f" /></div>
-	<div>Client Secret: <input type="text" id="clientSecret" value="6327ebcf25f8499e836ee9b51639a6c2" /></div>
+	<div>Client ID: <input type="text" id="clientId" /></div>
+	<div>Client Secret: <input type="text" id="clientSecret"  /></div>
 	<input type="button" id="buttonSubmit" value="Submit" />
+	<h3>Authenticating on APIs</h3>
+	<div>This page will allow to authenticate on any APIs whose handlers are subclasses of the <b>AssistantHandlerWithAuthCode</b> class.</div>
+	<div>You need to create your own Client IDs and Secrets in the APIs.</div>
+	<div>When creating your client ID and secret make sure to set the redirect URI to <b><span id="elementRedirectUri">redirect uri</span></b></div>
+	<div>Some examples where you can create these:</div>
+	<ul>
+		<li><a href="https://developer.spotify.com/my-applications/#!/applications">Spotify</a></li>
+		<li><a href="https://console.developers.google.com/apis/credentials/">Google APIs</a> - click on <b>Create Credentials</b>-><b>OAuth client Id</b>-><b>Web Application</b></li>
+	</ul>
 </body>
 </html>
