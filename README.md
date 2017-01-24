@@ -6,6 +6,8 @@ You'll be able to do stuff like this:
 
 [![Testing Voice Assistant Webhook](https://img.youtube.com/vi/4SDeHLhWpAk/0.jpg)](https://www.youtube.com/watch?v=4SDeHLhWpAk)
 
+The best way to create your custom interactions with API.AI on Android is by using [AutoVoice Natural Language](https://play.google.com/store/apps/details?id=com.joaomgcd.autovoice). At this time the natural language features are still in beta so get that [here](https://joaoapps.com/beta-testing/) to give it a try.
+
 You can use this to allow API.AI to access other APIs. Included is an example that gets the current weather from the Yahoo Weather API.
 
 You start by creating an intent in API.AI and then create a handler for that intent in the webhook to make it do whatever you want.
