@@ -14,6 +14,8 @@ You start by creating an intent in API.AI and then create a handler for that int
 
 For example, you could create an intent that would get the current value for your favorite stock or what the latest movie releases are. If you can access an API you can use it with API.AI :)
 
+If you do add new APIs to this and you think everyone else could use it too, please send a pull request my way and I'll add it!
+
 More info about Api.ai webhooks could be found here:
 [Api.ai Webhook](https://docs.api.ai/docs/webhook)
 
