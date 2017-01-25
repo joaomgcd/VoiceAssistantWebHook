@@ -2,6 +2,7 @@
 from googlecalendar import AssistantHandlerGoogleCalendar
 
 from utils import current_milli_time
+import datetime as dt
 import json
 
 class AssistantHandlerGoogleCalendarAdd(AssistantHandlerGoogleCalendar):
@@ -17,6 +18,10 @@ class AssistantHandlerGoogleCalendarAdd(AssistantHandlerGoogleCalendar):
 	def getEndpointParameters(self,parameters):
 		return {"text":parameters["text"],"sendNotifications":True}
 
-	def getSpeech(self, parameters, data):		
-		return "Added calendar appointment with the text \"" + data["summary"] + "\" which will start at " + data["start"]["dateTime"] + " and end at " + data["end"]["dateTime"]
+	def getSpeech(self, parameters, data):
+		formatFromGoogle = '%Y-%m-%dT%H:%M:%SZ'
+		formatForOutput = '%Y-%m-%d %H:%M'
+		start = dt.datetime.strptime(data["start"]["dateTime"], formatFromGoogle).strftime(formatForOutput)
+		end = dt.datetime.strptime(data["end"]["dateTime"], formatFromGoogle).strftime(formatForOutput)
+		return "Added calendar appointment with the description \"" + data["summary"] + "\" starting on " + start
 	

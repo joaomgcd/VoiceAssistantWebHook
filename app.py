@@ -52,6 +52,8 @@ app = Flask(__name__, static_url_path='/static')
 @app.errorhandler(Exception)
 def handle_bad_request(e):
 	import traceback
+	print str(traceback.format_exc())
+	print str(e)
 	return make_response(json.dumps({"error":str(e),"trace":str(traceback.format_exc())}, indent=4))
 
 @app.route('/webhook', methods=['POST'])
