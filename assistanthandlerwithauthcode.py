@@ -8,7 +8,7 @@ from abc import ABCMeta, abstractmethod
 
 class AssistantHandlerWithAuthCode(AssistantHandlerWithAuth):
 	__metaclass__ = ABCMeta
-
+	httpMethodMap = {"GET" : requests.get, "POST": requests.post, "PUT": requests.put, "DELETE": requests.delete}
 	def __init__(self, action, apiName):
 		AssistantHandlerWithAuth.__init__(self,action, apiName)
 	
@@ -22,13 +22,21 @@ class AssistantHandlerWithAuthCode(AssistantHandlerWithAuth):
 				raise ValueError(self.getApiName() + ' is not authorized. Please visit /static/auth.html to authorize')
 			headers = {"Authorization": "Bearer " + accessToken}
 			postData = self.getPostData(parameters)
-			if postData is None:
-				result = requests.get(url, headers = headers)
-			else:
+			if postData is not None:
 				postData = json.dumps(postData, indent=4)
 				headers['content-type'] = 'application/json'
 				print "postData: " + postData
-				result = requests.post(url, data = postData, headers = headers)
+			
+			httpMethod = self.getHttpMethod()
+			if httpMethod is None:
+				if postData is None:
+					result = requests.get(url, headers = headers)
+				else:
+					result = requests.post(url, data = postData, headers = headers)
+			else:
+				print "Using custom HTTP method: " + httpMethod
+				requestMethod = self.httpMethodMap[httpMethod]
+				result = requestMethod(url, data = postData, headers = headers)
 			print("Result:")
 			print result
 			resultjson = result.json()
@@ -44,4 +52,7 @@ class AssistantHandlerWithAuthCode(AssistantHandlerWithAuth):
 
 	@abstractmethod
 	def getScopes(self):
+		pass 
+
+	def getHttpMethod(self):
 		pass 
