@@ -9,9 +9,8 @@ import os
 class AssistantHandlerHelloName(AssistantHandler):
 
     def __init__(self):
-        AssistantHandler.__init__(self, 'runtask')
-        self.time = arrow.now(os.getenv('TIMEZONE'))
-
+        AssistantHandler.__init__(self, 'location.get')
+        
     def getBaseUrl(self, parameters):
         pass
 
@@ -22,7 +21,7 @@ class AssistantHandlerHelloName(AssistantHandler):
         pass
 
     def getSpeech(self, parameters, data):
-        dur=parameters.get('duration')
-        if dur:
-            j=json.loads(dur)
-            
+        timezone = os.getenv("TIMEZONE")
+        time=arrow.get(parameters.get("statetime")).to(str(timezone)).humanize()
+        state=parameters.get("location")
+        return "Sriram is at {} since {}".format(state,time)
