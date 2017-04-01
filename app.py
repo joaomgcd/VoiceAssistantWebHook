@@ -65,7 +65,7 @@ def webhook():
 		return
 	print("Request:")
 	print(json.dumps(req, indent=4))
-
+	
 	res = None
 	result = req.get("result")
 	if result is None:
@@ -74,7 +74,7 @@ def webhook():
 	parameters = result.get("parameters")
 	for assistanHandlerClass in handlerutils.assistanHandlerClasses:
 		#print assistanHandlerClass
-		assistantHandler = assistanHandlerClass()  
+		assistantHandler = assistanHandlerClass()
 		if assistantHandler.shouldHandle(req, parameters):
 			res = assistantHandler.handle(parameters)
 
@@ -98,7 +98,7 @@ def storeauth():
 		auth["authUrl"] = authUrl
 		auth["tokenUrl"] = tokenUrl
 		auth["scopes"] = " ".join([scope for scope in scopes])
-	authutils.writeAuthToFile(auth)   
+	authutils.writeAuthToFile(auth)
 	return make_response(json.dumps(auth, indent=4))
 
 @app.route('/auth', methods=['GET'])
@@ -147,4 +147,3 @@ if __name__ == '__main__':
 
 	print "Starting app on port %d" % port
 	app.run(debug=False, port=port, host='0.0.0.0',threaded=True)
-
