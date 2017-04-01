@@ -1,6 +1,7 @@
 import requests
 import os
 import json
+
 class JsonDb():
 	def __init__(self):
 		self.baseurl="https://jsonbin.org/me"
@@ -9,6 +10,7 @@ class JsonDb():
 		
 	def get(self,key):
 		url=self.baseurl+"/"+key
+		print url
 		r=requests.get(url,headers=self.headers)
 		if r.status_code==404:
 			return None
